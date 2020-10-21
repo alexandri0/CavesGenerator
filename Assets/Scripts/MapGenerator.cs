@@ -1,18 +1,13 @@
-﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.Mathematics;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(Tilemap))]
 public class MapGenerator : MonoBehaviour
 {
-    public bool MainLevelTilemap;
+    public bool addCollider;
 
-    public Controller sr;
+    public Controller reloader;
 
     [Range(0,100)]
     public int randomFillPercent = 45;
@@ -63,9 +58,9 @@ public class MapGenerator : MonoBehaviour
 
     private void Start()
     {
-        sr.Loading += 1;
+        reloader.Loading += 1;
         if (useRandomSeed)
-            seed = UnityEngine.Random.Range(0f, 99999f).ToString();
+            seed = Random.Range(0f, 99999f).ToString();
         random = new System.Random(seed.GetHashCode());
 
         tilemap = GetComponent<Tilemap>();
@@ -73,7 +68,7 @@ public class MapGenerator : MonoBehaviour
         height = tilemap.size.y;
 
         GeneratMap(width, height);
-        sr.Loading -= 1;
+        reloader.Loading -= 1;
     }
 
     private void GeneratMap(int width, int height)
@@ -89,7 +84,7 @@ public class MapGenerator : MonoBehaviour
         FillTileMap();
         DecorateTileMap();
 
-        if(MainLevelTilemap)
+        if(addCollider)
         {
             var tmc = gameObject.AddComponent<TilemapCollider2D>();
             gameObject.AddComponent<CompositeCollider2D>();
